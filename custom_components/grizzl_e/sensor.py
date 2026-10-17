@@ -16,7 +16,7 @@ from homeassistant.const import (
 from homeassistant.helpers.entity import EntityCategory, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, CONF_PORTS, port_key, STATE_ICONS, STATE_ICON_UNKNOWN
+from .const import DOMAIN, CONF_PORTS, port_key, STATE_OPTIONS, STATE_ICONS, STATE_ICON_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     # Per-cable/port sensors. On multi-cable units (e.g. the Grizzl-E Duo) the
     # second cable reports through a different set of JSON keys, resolved by
     # port_key(); see const.py and issue #23.
-    state_options = ["PowerUp", "SelfTest", "Standby", "Vehicle Connected", "Vehicle Charging", "Charging Complete", "Disabled", "Error"]
+    state_options = STATE_OPTIONS
 
     for port in range(1, num_ports + 1):
         port_suffix = f" Port {port}" if num_ports > 1 else ""

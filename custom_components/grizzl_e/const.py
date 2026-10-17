@@ -41,16 +41,30 @@ PORT_FIELD_KEYS = {
 }
 
 
+# Labels reported by the State sensor, indexed by the raw integer the charger
+# sends (e.g. "state" / "state2"). Single-word labels keep dashboards compact.
+STATE_OPTIONS = [
+    "PowerUp",
+    "SelfTest",
+    "Standby",
+    "Connected",
+    "Charging",
+    "Complete",
+    "Disabled",
+    "Error",
+]
+
+
 # Icons used by the State sensor. The State sensor's native value is an enum
-# (see SENSOR_STATE_OPTIONS); the icon is looked up from that value so the
-# entity changes icon as the charger moves through its states.
+# (see STATE_OPTIONS); the icon is looked up from that value so the entity
+# changes icon as the charger moves through its states.
 STATE_ICONS = {
     "PowerUp": "mdi:power",
     "SelfTest": "mdi:progress-wrench",
-    "Standby": "mdi:power-standby",
-    "Vehicle Connected": "mdi:car-electric",
-    "Vehicle Charging": "mdi:ev-station",
-    "Charging Complete": "mdi:battery-charging-100",
+    "Standby": "mdi:ev-plug-type1",
+    "Connected": "mdi:car",
+    "Charging": "mdi:car-electric",
+    "Complete": "mdi:car-electric-outline",
     "Disabled": "mdi:cancel",
     "Error": "mdi:alert-circle",
 }

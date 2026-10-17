@@ -41,6 +41,24 @@ PORT_FIELD_KEYS = {
 }
 
 
+# Icons used by the State sensor. The State sensor's native value is an enum
+# (see SENSOR_STATE_OPTIONS); the icon is looked up from that value so the
+# entity changes icon as the charger moves through its states.
+STATE_ICONS = {
+    "PowerUp": "mdi:power",
+    "SelfTest": "mdi:progress-wrench",
+    "Standby": "mdi:power-standby",
+    "Vehicle Connected": "mdi:car-electric",
+    "Vehicle Charging": "mdi:ev-station",
+    "Charging Complete": "mdi:battery-charging-100",
+    "Disabled": "mdi:cancel",
+    "Error": "mdi:alert-circle",
+}
+
+# Fallback icon for the State sensor when the value is unknown/unavailable.
+STATE_ICON_UNKNOWN = "mdi:ev-station"
+
+
 def port_key(field: str, port: int) -> str:
     """Return the /main JSON key for a logical per-cable field on a port.
 

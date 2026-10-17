@@ -16,7 +16,7 @@ from homeassistant.const import (
 from homeassistant.helpers.entity import EntityCategory, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, CONF_PORTS, port_key
+from .const import DOMAIN, CONF_PORTS, port_key, STATE_ICONS, STATE_ICON_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -72,7 +72,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
         add("session_energy", "Session Energy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY, state_class=SensorStateClass.TOTAL_INCREASING)
         add("total_energy", "Total Energy", UnitOfEnergy.KILO_WATT_HOUR, device_class=SensorDeviceClass.ENERGY, state_class=SensorStateClass.TOTAL_INCREASING)
         add("session_time", "Session Time", UnitOfTime.SECONDS, device_class=SensorDeviceClass.DURATION)
-        add("state", "State", None, device_class=SensorDeviceClass.ENUM, state_class=None, options=state_options)
+        add("state", "State", None, device_class=SensorDeviceClass.ENUM, state_class=None, options=state_options, dynamic_icons=STATE_ICONS)
         add("pilot", "Pilot State", None, device_class=SensorDeviceClass.ENUM, state_class=None, options=["no_ev", "ev_connected"])
 
     async_add_entities(sensors)
@@ -99,6 +99,7 @@ class GrizzleESensor(CoordinatorEntity, SensorEntity):
         entity_category=None,
         options=None,
         unique_key=None,
+        dynamic_icons=None,
     ):
         """Initialize the sensor."""
         super().__init__(coordinator)
@@ -108,6 +109,9 @@ class GrizzleESensor(CoordinatorEntity, SensorEntity):
         self._attr_device_class = device_class
         self._attr_state_class = state_class
         self._attr_entity_category = entity_category
+        # Maps a native value to an MDI icon, used by the State sensor so its
+        # icon reflects the current charging state.
+        self._dynamic_icons = dynamic_icons
         if options:
             self._attr_options = options
 
@@ -118,6 +122,13 @@ class GrizzleESensor(CoordinatorEntity, SensorEntity):
         # unique_ids. Falls back to the JSON key for backward compatibility.
         self._attr_unique_id = f"{self.coordinator.config_entry.entry_id}_{unique_key or key}"
             
+
+    @property
+    def icon(self):
+        """Return an icon matching the current state, when configured."""
+        if not self._dynamic_icons:
+            return None
+        return self._dynamic_icons.get(self.native_value, STATE_ICON_UNKNOWN)
 
     @property
     def native_value(self):
